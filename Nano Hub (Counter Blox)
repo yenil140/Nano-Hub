@@ -1,0 +1,1658 @@
+local getrawmetatable = getrawmetatable or false
+local http_request = http_request or request or (http and http.request) or (syn and syn.request) or false
+local mousemove = mousemove or mousemoverel or mouse_move or false
+local getsenv = getsenv or false
+local listfiles = listfiles or listdir or syn_io_listdir or false
+
+if (getrawmetatable == false) then
+    return game.Players.LocalPlayer:Kick('Exploit not supported! Missing: getrawmetatable.')
+end
+if (http_request == false) then
+    return game.Players.LocalPlayer:Kick('Exploit not supported! Missing: request.')
+end
+if (mousemove == false) then
+    return game.Players.LocalPlayer:Kick('Exploit not supported! Missing: mousemove.')
+end
+if (getsenv == false) then
+    return game.Players.LocalPlayer:Kick('Exploit not supported! Missing: getsenv.')
+end
+if (listfiles == false) then
+    return game.Players.LocalPlayer:Kick('Exploit not supported! Missing: listfiles.')
+end
+
+----------------------------------------------------
+
+local Hitboxes = {
+    ['Head'] = {'Head'};
+    ['Chest'] = {'HumanoidRootPart','LowerTorso','UpperTorso'};
+    ['Arms'] = {'LeftUpperArm', 'LeftLowerArm', 'LeftHand', 'RightUpperArm', 'RightLowerArm', 'RightHand'};
+    ['Legs'] = {'LeftUpperLeg', 'LeftLowerLeg', 'LeftFoot', 'RightUpperLeg', 'RightLowerLeg', 'RightFoot'};
+}
+
+----------------------------------------------------
+
+makefolder('Nanohub')
+makefolder('Nanohub/CounterBlox')
+
+----------------------------------------------------
+
+getgenv().scriptLocals = {}
+
+getgenv().ragebot = {
+    Enabled = false,
+    Teamcheck = false,
+    Hitbox = 'Head',
+    Silent = {
+        Enabled = false,
+        Target = nil,
+        Mouse = {
+            FOV = 0,
+            X = 0,
+            Y = 0,
+        },
+    };
+    AlwaysWallbang = false;
+    AWToggle = false;
+    TapTimes = 1;
+}
+
+getgenv().yaw = {
+    Enabled = false,
+    Pitch = "",
+    Custom = 5,
+    Yaw = {
+        Mode = "",
+        Strenght = 100,
+        Headless = false
+    },
+    BreakCameraSpectate = {
+        Enabled = false,
+        Min = 1,
+        Max = 50,
+    }
+}
+
+getgenv().yourself = {
+    ThirdPerson = {
+        Enabled = false,
+        Distance = 10,
+        ShowToOthers = false;
+    },
+    GodmodeNonFE = false,
+    GodmodeFE = false,
+    InfMoney = false,
+    Bhop = {
+        Enabled = false,
+        Speed = 18,
+        Hopping = false
+    };
+    Chams = {
+        Color = Color3.fromRGB(255,0,255);
+        Enabled = false;
+    }
+}
+
+getgenv().bullet = {
+    BulletTracers = {
+        Enabled = false;
+        Color = Color3.new(0,0,1)
+    };
+    BulletImpacts = {
+        Enabled = false;
+        Color = Color3.new(1,0,0)
+    };
+}
+
+getgenv().viewmodel = {
+    Enabled = false;
+    ChangeColor = false;
+    X = 0;
+    Y = 0;
+    Z = 0;
+    Roll = 0;
+    Arms = {
+        Color = Color3.fromRGB(255,255,255);
+        Transparency = 0;
+    };
+    Weapon = {
+        Color = Color3.fromRGB(255,0,0);
+        Transparency = 0;
+    };
+}
+
+getgenv().watermark = {
+    ShowFPS = false;
+    ShowTime = false;
+    ShowNick = false;
+}
+
+getgenv().killall = {
+    Enabled = false;
+    DamageMulti = 100;
+}
+
+getgenv().godmode = {
+    UsedFE = false;
+}
+
+getgenv().configs = {
+    SelectedConfig = '';
+}
+
+getgenv().others = {
+    Chams = {
+        Enabled = false;
+        Color = Color3.fromRGB(200,0,255);
+        Transparency = 0;
+        ThroughWalls = false
+    };
+    ShowTeam = false;
+}
+
+getgenv().world = {
+    WorldColor = {
+        Enabled = false;
+        Color = game.Lighting.Ambient;
+    };
+    AlwaysNight = false;
+}
+
+getgenv().bypasses = {
+    FireBypass = false;
+    FallBypass = false;
+}
+
+getgenv().aimbot = {
+    Enabled = false;
+    Smoothness = 0;
+    FOV = 80;
+    WallCheck = false;
+    Target = nil;
+    Hitbox = 'Head';
+    Teamcheck = true;
+    Keybind = 'E';
+    KeybindEnabled = false;
+    Silent = {
+        Enabled = false;
+    };
+}
+
+getgenv().server = {
+    Grenade = {
+        Spam = false;
+        Selected = 'HE Grenade'
+    };
+    CrashServer = false;
+}
+
+getgenv().drawings = {
+    Squares = {},
+    Health = {},
+    Texts = {},
+    BoxEsp = false,
+    HealthEsp = false
+}
+----------------------------------------------------
+
+function createWatermark()
+    local Watermark = Instance.new("ScreenGui")
+    local Main = Instance.new("Frame")
+    local Text = Instance.new("TextLabel")
+    local Rainbow = Instance.new("UIGradient")
+
+    local TextGradient = Instance.new("UIGradient")
+
+    TextGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(226, 0, 255)), ColorSequenceKeypoint.new(0.21, Color3.fromRGB(143, 15, 255)), ColorSequenceKeypoint.new(0.47, Color3.fromRGB(255, 0, 255)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(131, 7, 255)), ColorSequenceKeypoint.new(0.76, Color3.fromRGB(238, 0, 255)), ColorSequenceKeypoint.new(0.91, Color3.fromRGB(147, 23, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 52, 255))}
+    TextGradient.Parent = Text
+    TextGradient.Name = 'Gradient'
+
+    Watermark.Name = "Watermark"
+    Watermark.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Main.Name = "Main"
+    Main.Parent = Watermark
+    Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Main.BorderSizePixel = 0
+    Main.Position = UDim2.new(0.803638458, 0, 0.015142506, 0)
+    Main.Size = UDim2.new(0.179906905, 0, 0.0484029502, 0)
+    Text.Name = "Text"
+    Text.Parent = Main
+    Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Text.BorderSizePixel = 0
+    Text.Position = UDim2.new(0.00999999978, 0, 0.00899999961, 0)
+    Text.Size = UDim2.new(0.980000019, 0, 0.980000019, 0)
+    Text.Font = Enum.Font.SourceSans
+    Text.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Text.TextSize = 14.000
+    Rainbow.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 0, 255)), ColorSequenceKeypoint.new(0.14, Color3.fromRGB(0, 170, 255)), ColorSequenceKeypoint.new(0.24, Color3.fromRGB(0, 255, 0)), ColorSequenceKeypoint.new(0.36, Color3.fromRGB(255, 255, 0)), ColorSequenceKeypoint.new(0.48, Color3.fromRGB(255, 170, 0)), ColorSequenceKeypoint.new(0.64, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(0.81, Color3.fromRGB(170, 0, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 170, 255))}
+    Rainbow.Name = "Rainbow"
+    Rainbow.Parent = Main
+
+    return Watermark
+end
+
+function isAlive(player)
+    local alive = false
+    if player ~= nil and player.Parent == game.Players and player.Character ~= nil then
+        if
+            player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") ~= nil and
+                player.Character.Humanoid.Health > 0 and
+                player.Character:FindFirstChild("Head")
+         then
+            alive = true
+        end
+    end
+
+    return alive
+end
+
+local function IsVisible(pos, ignoreList)
+    if isAlive(Player) then
+        return #workspace.CurrentCamera:GetPartsObscuringTarget({Player.Character.Head.Position, pos}, ignoreList) == 0 and
+            true or
+            false
+    end
+end
+
+local function PLR_VISIBLE(plr)
+    local IgnoreList = {game:GetService("Players").LocalPlayer.Character, workspace.Ray_Ignore, workspace.Map.Clips}
+    local NewRay =
+        Ray.new(
+        workspace.CurrentCamera.CFrame.p,
+        (plr.Character.HumanoidRootPart.Position - workspace.CurrentCamera.CFrame.p).unit * 2048
+    )
+    local FindPart = workspace:FindPartOnRayWithIgnoreList(NewRay, IgnoreList)
+
+    if FindPart and FindPart:IsDescendantOf(plr.Character) then
+        return true
+    end
+
+    return false
+end
+
+local NanohubFolder = Instance.new("Folder", workspace)
+
+NanohubFolder.Name = "Nanohub"
+
+local function DefuseC4()
+    local defusing = false
+	if isAlive(Player) and workspace.Map.Gamemode.Value == "defusal" and not defusing and workspace:FindFirstChild("C4") then 
+		defusing = true
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		local pos = Player.Character.HumanoidRootPart.CFrame 
+		workspace.CurrentCamera.CameraType = "Fixed"
+		Player.Character.HumanoidRootPart.CFrame = workspace.C4.Handle.CFrame + Vector3.new(0, 2, 0)
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.1)
+		Player.Backpack.PressDefuse:FireServer(workspace.C4)
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.25)
+		if IsAlive(Player) and workspace:FindFirstChild("C4") and workspace.C4:FindFirstChild("Defusing") and workspace.C4.Defusing.Value == Player then
+			Player.Backpack.Defuse:FireServer(workspace.C4)
+		end
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.2)
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		Player.Character.HumanoidRootPart.CFrame = pos
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		game.Workspace.CurrentCamera.CameraType = "Custom"
+		defusing = false
+	end
+end
+
+local function PlantC4()
+    local planting = false
+	if isAlive(Player) and workspace.Map.Gamemode.Value == "defusal" and workspace.Status.Preparation.Value == false and not planting then 
+		planting = true
+		local pos = Player.Character.HumanoidRootPart.CFrame 
+		workspace.CurrentCamera.CameraType = "Fixed"
+		Player.Character.HumanoidRootPart.CFrame = workspace.Map.SpawnPoints.C4Plant.CFrame
+		wait(0.2)
+		game.ReplicatedStorage.Events.PlantC4:FireServer((pos + Vector3.new(0, -2.75, 0)) * CFrame.Angles(math.rad(90), 0, math.rad(180)), 'B')
+		wait(0.2)
+		Player.Character.HumanoidRootPart.CFrame = pos
+		Player.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		game.Workspace.CurrentCamera.CameraType = "Custom"
+		planting = false
+	end
+end
+
+function GetSilentTarget()
+    local target, oldval = nil, math.huge
+    local LocalPlayer = game.Players.LocalPlayer
+    local Mouse = LocalPlayer:GetMouse()
+    local FOV
+    for i, v in pairs(game.Players:GetPlayers()) do
+        if (getgenv().ragebot.Teamcheck == false or v.Team ~= LocalPlayer.Team) then
+            if isAlive(v) and isAlive(LocalPlayer) then
+                if (getgenv().ragebot.AWToggle or PLR_VISIBLE(v)) then
+                    local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+                    FOV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+                    if FOV < oldval then
+                        target = v
+                        oldval = FOV
+                    end
+                else
+                    getgenv().ragebot.Silent.Target = nil
+                end
+            end
+        end
+    end
+
+    if target ~= nil then
+        return target,FOV,Vector2.new(Mouse.X,Mouse.Y)
+    end
+
+    return nil
+end
+
+function throwGrenade(gn)
+    local oh1 = game:GetService("ReplicatedStorage").Weapons[gn].Model
+    local oh3 = 25
+    local oh4 = 35
+    local oh6 = ""
+    local oh7 = ""
+    --local pos
+    --local mo = game.Players.LocalPlayer:GetMouse()
+    --pos = mo.Hit.p
+    game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(
+        oh1,
+        nil,
+        oh3,
+        oh4,
+        Vector3.new(0, -100, 0),
+        oh6,
+        oh7
+    )
+end
+
+function GetSpectators()
+    local CurrentSpectators = {}
+
+    for i, v in pairs(game:GetService("Players"):GetChildren()) do
+        if v ~= game:GetService("Players").LocalPlayer then
+            if
+                not v.Character and v:FindFirstChild("CameraCF") and
+                    (v.CameraCF.Value.Position - workspace.CurrentCamera.CFrame.p).Magnitude < 10
+             then
+                table.insert(CurrentSpectators, v)
+            end
+        end
+    end
+
+    return CurrentSpectators
+end
+
+function GetConfigs()
+    local Configs = {}
+
+    writefile('Nanohub/CounterBlox/-.cfg','{}')
+
+    for i, v in pairs(listfiles("Nanohub/CounterBlox")) do
+        local tos = tostring(v)
+        if tos:sub(-4) == ".cfg" then
+            table.insert(Configs, tos:sub(21, -5))
+        end
+    end
+
+    return Configs
+end
+
+function stringToTable(str)
+    local tablestr = {}
+    table.insert(tablestr, str)
+
+    return tablestr
+end
+
+function chams(char,value)
+    if char ~= nil then
+        if char:FindFirstChild("HumanoidRootPart") ~= nil and char:FindFirstChild("Head") ~= nil then
+            if game.Players:FindFirstChild(char.Name) and isAlive(game.Players[char.Name]) then
+                for i, v in pairs(char:GetChildren()) do
+                    if v:FindFirstChild("Cham") == nil then
+                        if getgenv().others.Chams.Enabled == true then
+                            if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+                                local curHit = false
+                                local cham = Instance.new("BoxHandleAdornment", v)
+                                cham.Name = "Cham"
+                                cham.AlwaysOnTop = value
+                                cham.Size = v.Size + Vector3.new(0.01,0.01,0.01)
+                                cham.ZIndex = 5
+                                cham.Adornee = v
+                                cham.Color3 = getgenv().others.Chams.Color
+                                cham.Transparency = getgenv().others.Chams.Transparency
+                                spawn(
+                                    function()
+                                        while getgenv().others.Chams.Enabled and isAlive(game.Players[char.Name]) do
+                                            wait()
+                                            cham.Color3 = getgenv().others.Chams.Color
+                                            cham.Transparency = getgenv().others.Chams.Transparency / 100
+                                        end
+                                        cham:Destroy()
+                                    end
+                                )
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+function tchams(char)
+    if char ~= nil then
+        if char:FindFirstChild("HumanoidRootPart") ~= nil and char:FindFirstChild("Head") ~= nil then
+            if game.Players:FindFirstChild(char.Name) and isAlive(game.Players[char.Name]) then
+                for i, v in pairs(char:GetChildren()) do
+                    if v:FindFirstChild("tCham") == nil then
+                        if getgenv().others.Chams.Enabled == true and getgenv().others.Chams.ThroughWalls.Enabled then
+                            if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+                                local cham = Instance.new("BoxHandleAdornment", v)
+                                cham.Name = "tCham"
+                                cham.Size = v.Size + Vector3.new(.3,.3,.3)
+                                cham.ZIndex = 6
+                                cham.Adornee = v
+                                cham.Color3 = getgenv().others.Chams.ThroughWalls.Color
+                                cham.Transparency = getgenv().others.Chams.ThroughWalls.Transparency
+                                spawn(
+                                    function()
+                                        while getgenv().others.Chams.Enabled and getgenv().others.Chams.ThroughWalls.Enabled and isAlive(game.Players[char.Name]) do
+                                            wait()
+                                            cham.Color3 = getgenv().others.Chams.ThroughWalls.Color
+                                            cham.Transparency = getgenv().others.Chams.ThroughWalls.Transparency / 100
+                                        end
+                                        cham:Destroy()
+                                    end
+                                )
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+local Player = game.Players.LocalPlayer
+local Client, MetaClient = getsenv(Player.PlayerGui.Client), getrawmetatable(Player.PlayerGui.Client)
+
+game.Players.PlayerRemoving:Connect(function(plr)
+    if getgenv().drawings.Squares[plr.Name] then
+        for _,v in pairs(getgenv().drawings.Squares[plr.Name]) do
+            v:Remove()
+        end
+        getgenv().drawings.Squares[plr.Name] = nil
+    end
+
+    if getgenv().drawings.Texts[plr.Name] then
+        for _,v in pairs(getgenv().drawings.Texts[plr.Name]) do
+            v:Remove()
+        end
+        getgenv().drawings.Texts[plr.Name] = nil
+    end
+end)
+
+local RunService, UIS, TweenService = game:GetService("RunService"), game:GetService("UserInputService"),game:GetService('TweenService')
+
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/MrAntiMatteryAlt/No/main/BracketV2.lua"))()
+
+local Window, MainGUI = library:CreateWindow("Nanohub")
+
+local RageTab = Window:CreateTab("Rage")
+local LegitTab = Window:CreateTab('Legit')
+local VisualsTab = Window:CreateTab("Visuals")
+local MovementTab = Window:CreateTab("Movement")
+local MiscTab = Window:CreateTab("Misc")
+local SettingsTab = Window:CreateTab("Settings")
+
+local RageTabGrRagebot = RageTab:CreateGroupbox("Ragebot", "Left")
+local RageGrYaw = RageTab:CreateGroupbox("Yaw", "Left")
+local RageTabGrKill = RageTab:CreateGroupbox("Kill All", "Right")
+
+local LegitTabGrAimbot = LegitTab:CreateGroupbox('Aimbot','Left')
+
+local MiscTabGrYourself = MiscTab:CreateGroupbox("Yourself", "Left")
+local MiscTabTabGrBypasses = MiscTab:CreateGroupbox("Bypasses", "Left")
+local MiscTabTabGrServer = MiscTab:CreateGroupbox("Server", "Left")
+
+local VisualsTabGrSelf = VisualsTab:CreateGroupbox("Self", "Left")
+local VisualsTabGrOthers = VisualsTab:CreateGroupbox("Others", "Left")
+local VisualsTabGrBullet = VisualsTab:CreateGroupbox("Bullet", "Left")
+local VisualsTabGrViewmodel = VisualsTab:CreateGroupbox("Viewmodel", "Right")
+local VisualsTabGrWatermark = VisualsTab:CreateGroupbox("Watermark", "Left")
+local VisualsTabGrWorld = VisualsTab:CreateGroupbox("World", "Right")
+
+local SettingsTabGrGui = SettingsTab:CreateGroupbox("Gui", "Left")
+local SettingsTabGrBinds = SettingsTab:CreateGroupbox("Binds", "Right")
+--local SettingsTabGrConfigs = SettingsTab:CreateGroupbox('Configs','Left')
+
+local MovementTabGrYourself = MovementTab:CreateGroupbox("Yourself", "Left")
+
+--[[SettingsTabGrConfigs:CreateButton('Create Config (Config + number)',function()
+    local str = '{
+'
+    for i,tab in pairs(library.Pointers) do
+        function GetValue(v)
+            local Value = nil
+
+            if v['GetValue'] then
+                Value = v:GetValue()
+            elseif v['GetColor'] then
+                Value = v:GetColor()
+            elseif v['GetState'] then
+                Value = v:GetState()
+            elseif v['GetBind'] then
+                Value = v:GetBind()
+            elseif v['GetOption'] then
+                Value = v:GetOption()
+            end
+
+            return Value
+        end
+        local value = tostring(GetValue(tab))
+        i = tostring(i)
+        str = str .. '['' .. i .. ''] = ' .. ''' .. value  .. ''' .. ';
+'
+    end
+
+    writefile('Nanohub/CounterBlox/' .. tostring(#listfiles("Nanohub/CounterBlox") + 1) .. 'config.cfg', str)
+end)
+
+SettingsTabGrConfigs:CreateButton('Load Config',function()
+    if getgenv().configs.SelectedConfig ~= '' then
+        if pcall(function() readfile('Nanohub/CounterBlox' .. getgenv().configs.SelectedConfig .. '.cfg') end) then
+            if readfile('Nanohub/CounterBlox' .. getgenv().configs.SelectedConfig .. '.cfg') ~= nil then
+                library:LoadConfig(readfile('Nanohub/CounterBlox' .. getgenv().configs.SelectedConfig .. '.cfg'))
+                print(readfile('Nanohub/CounterBlox' .. getgenv().configs.SelectedConfig .. '.cfg'))
+            end
+        end
+    end
+end)
+
+local ConfigsDrop = SettingsTabGrConfigs:CreateDropdown('Select Config',GetConfigs(),function(val)
+    getgenv().configs.SelectedConfig = val
+end)
+
+SettingsTabGrConfigs:CreateButton('Refresh',function()
+    ConfigsDrop:Refresh(GetConfigs())
+end)]]
+
+SettingsTabGrGui:CreateToggle(
+    "Toggle Gui",
+    function(val)
+        MainGUI.Enabled = not MainGUI.Enabled
+    end
+):CreateKeyBind("Insert")
+
+SettingsTabGrBinds:CreateToggle('Left AI Keybind',function()
+    getgenv().scriptLocals['Pitch']:Set('Left')
+    getgenv().yaw.Pitch = 'Left'
+end):CreateKeyBind()
+
+SettingsTabGrBinds:CreateToggle('Right AI Keybind',function()
+    getgenv().scriptLocals['Pitch']:Set('Right')
+    getgenv().yaw.Pitch = 'Right'
+end):CreateKeyBind()
+
+MiscTabTabGrServer:CreateButton('Plant C4',function()
+    PlantC4()
+end)
+
+MiscTabTabGrServer:CreateButton('Defuse C4',function()
+    DefuseC4()
+end)
+
+MiscTabTabGrServer:CreateToggle('Grenade Spam',function(val)
+    getgenv().server.Grenade.Spam = val
+    if getgenv().server.Grenade.Spam then
+        RunService:BindToRenderStep('Grenades_Spam',535645645,function()
+            throwGrenade(getgenv().server.Grenade.Selected)
+        end)
+    else
+        RunService:UnbindFromRenderStep('Grenades_Spam')
+    end
+end)
+
+MiscTabTabGrServer:CreateDropdown('Select Grenade',{"HE Grenade", "Molotov", "Flashbang", "Smoke Grenade"},function(val)
+    getgenv().server.Grenade.Selected = val
+end)
+
+MiscTabTabGrServer:CreateToggle('Crash Server',function(val)
+    getgenv().server.CrashServer = val
+    if getgenv().server.CrashServer then
+        RunService:BindToRenderStep('Crash_s',142343,function()
+            throwGrenade('HE Grenade')
+            throwGrenade('Molotov')
+            throwGrenade('Flashbang')
+            throwGrenade('Smoke Grenade')
+        end)
+    else
+        RunService:UnbindFromRenderStep('Crash_s')
+    end
+end)
+
+LegitTabGrAimbot:CreateToggle('Enabled',function(val)
+    getgenv().aimbot.Enabled = val
+    if getgenv().aimbot.Enabled then
+        RunService:BindToRenderStep('Aimbot_Loop',35445,function()
+            local oldval = math.huge
+            for i,v in pairs(game.Players:GetPlayers()) do
+                if (getgenv().aimbot.Teamcheck == false or v.Team ~= Player.Team) then
+                    if isAlive(v) and isAlive(Player) then
+                        if (getgenv().aimbot.WallCheck == false or PLR_VISIBLE(v)) then
+                            local SelectedHitbox = Hitboxes[getgenv().aimbot.Hitbox]
+                            for i,v in pairs(v.Character:GetChildren()) do
+                                if table.find(SelectedHitbox,v.Name) then
+                                    local Vector = workspace.CurrentCamera:WorldToScreenPoint(v.Position)
+                                    local Mouse = Player:GetMouse()
+                                    local FOV = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+                                    local PositionX = (Mouse.X-Vector.X)/getgenv().aimbot.Smoothness + 1
+							        local PositionY = (Mouse.Y-Vector.Y)/getgenv().aimbot.Smoothness + 1
+                                    if FOV < oldval and FOV < getgenv().aimbot.FOV then
+                                        getgenv().aimbot.Target = v
+                                        oldval = FOV
+                                    end
+                                end
+                            end
+                        end
+                    elseif not isAlive(v) then
+                        break
+                    end
+                end
+            end
+            if getgenv().aimbot.Target then
+                if getgenv().aimbot.Enabled then
+                    if not getgenv().aimbot.Silent.Enabled then
+                        if UIS:IsKeyDown(getgenv().aimbot.Keybind) then
+                            TweenService:Create(workspace.Camera,TweenInfo.new(getgenv().aimbot.Smoothness),{CFrame = CFrame.new(workspace.Camera.CFrame.p,getgenv().aimbot.Target.Position)}):Play()
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        RunService:UnbindFromRenderStep('Aimbot_Loop')
+    end
+end)
+
+LegitTabGrAimbot:CreateToggle('Teamcheck',function(val)
+    getgenv().aimbot.Teamcheck = val
+end)
+
+LegitTabGrAimbot:CreateToggle('Silent',function(val)
+    getgenv().aimbot.Silent.Enabled = val
+end)
+
+LegitTabGrAimbot:CreateDropdown('Hitbox',{'Head','Chest','Arms','Legs'},function(val)
+    getgenv().aimbot.Hitbox = val
+end)
+
+LegitTabGrAimbot:CreateSlider('FOV',0,360,80,function(val)
+    getgenv().aimbot.FOV = val
+end)
+
+LegitTabGrAimbot:CreateToggle('Wallcheck',function(val)
+    getgenv().aimbot.WallCheck = val
+end)
+
+LegitTabGrAimbot:CreateSlider('Smoothness',0,10,0,function(val)
+    getgenv().aimbot.Smoothness = val
+end)
+
+LegitTabGrAimbot:CreateToggle('Keybind',function(val)
+    getgenv().aimbot.KeybindEnabled = val
+end):CreateKeyBind('G',function(key)
+    getgenv().aimbot.Keybind = key
+end)
+
+MiscTabTabGrBypasses:CreateToggle('Fire Damage Bypass',function(val)
+    getgenv().bypasses.FireBypass = val
+end)
+
+MiscTabTabGrBypasses:CreateToggle('Fall Damage Bypass',function(val)
+    getgenv().bypasses.FallBypass = val
+end)
+
+VisualsTabGrWorld:CreateToggle('Change World Color',function(val)
+    getgenv().world.WorldColor.Enabled = val
+    if getgenv().world.WorldColor.Enabled then
+        RunService:BindToRenderStep('Color_Changing',5656,function()
+            game.Lighting.Ambient = getgenv().world.WorldColor.Color
+        end)
+    else
+        RunService:UnbindFromRenderStep('Color_Changing')
+    end
+end)
+
+VisualsTabGrWorld:CreateColorPicker('World Color',game.Lighting.Ambient,function(state)
+    getgenv().world.WorldColor.Color = state
+end)
+
+VisualsTabGrWorld:CreateToggle('Always Night',function(val)
+    getgenv().world.AlwaysNight = val
+    while wait() do
+        if not getgenv().world.AlwaysNight then game.Lighting.TimeOfDay = 12 break end
+        game.Lighting.TimeOfDay = 20
+    end
+end)
+
+RageTabGrKill:CreateToggle('Enabled',function(val)
+    getgenv().killall.Enabled = val
+    if getgenv().killall.Enabled then
+        RunService:BindToRenderStep('Kill_All',1,function()
+            for _,v in pairs(game.Players:GetPlayers()) do
+                if v.Team ~= Player.Team then
+                    if isAlive(v) and isAlive(Player) then
+                        local Arguments = {
+                            [1] = workspace[v.Name].Head,
+                            [2] = workspace[v.Name].Head.Position,
+                            [3] = 'Flip Knife',
+                            [4] = math.rad(1,100000),
+                            [5] = Player.Character.Gun,
+                            [8] = getgenv().killall.DamageMulti,
+                            [9] = false,
+                            [10] = false,
+                            [11] = Vector3.new(),
+                            [12] = math.rad(1,100000),
+                            [13] = Vector3.new()
+                        }
+
+                        game.ReplicatedStorage.Events.HitPart:FireServer(unpack(Arguments))
+                    end
+                end
+            end
+        end)
+    else
+        RunService:UnbindFromRenderStep('Kill_All')
+    end
+end):CreateKeyBind()
+
+RageTabGrKill:CreateSlider('Damage Multiplier',0,100,100,function(val)
+    getgenv().killall.DamageMulti = val
+end)
+
+VisualsTabGrWatermark:CreateToggle('Enabled',function(val)
+    if val == true then
+        local Watermark = createWatermark()
+        Watermark.Parent = game.CoreGui
+        Watermark.Main.BackgroundColor3 = Color3.new(255, 255, 255)
+        Watermark.Main.Text.TextColor3 = Color3.new(1, 1, 1)
+        Watermark.Main.Text.Font = "SourceSansBold"
+        Watermark.Main.Active = true
+        Watermark.Main.Draggable = true
+        Watermark.Main.Text.BackgroundTransparency = 0
+        Watermark.Main.Text.BorderSizePixel = 0
+        Watermark.Main.Text.BackgroundColor3 = Color3.new(0, 0, 0)
+        Watermark.Main.Text.Size = UDim2.new(.98, 0, .98, 0)
+        Watermark.Main.Text.Position = UDim2.new(0.01, 0, 0.009, 0)
+        spawn(
+            function()
+                while wait() do
+                    if Watermark and Watermark:FindFirstChild("Main") then
+                        Watermark.Main.Rainbow.Rotation = Watermark.Main.Rainbow.Rotation + 3
+                        Watermark.Main.Text.Gradient.Rotation = Watermark.Main.Text.Gradient.Rotation + .25
+                    end
+                end
+            end
+        )
+
+        local currentTime = ""
+
+        spawn(
+            function()
+                while wait() do
+                    local ok = os.date("*t")
+                    local h = ok["hour"]
+                    local m = ok["min"]
+                    local s = ok["sec"]
+                    if tonumber(s) <= 9 then
+                        s = "0" .. s
+                    end
+
+                    if tonumber(m) <= 9 then
+                        m = "0" .. m
+                    end
+
+                    if tonumber(h) <= 9 then
+                        h = "0" .. h
+                    end
+
+                    currentTime = h .. ":" .. m .. ":" .. s
+                end
+            end
+        )
+
+
+        game:GetService("RunService").RenderStepped:Connect(
+            function(TimeBetween)
+                local fpsnew = math.floor(1 / TimeBetween)
+                local WatermarkShowFPS = getgenv().watermark.ShowFPS
+                local WatermarkShowTime = getgenv().watermark.ShowTime
+                local WatermarkShowNick = getgenv().watermark.ShowNick
+                if Watermark ~= nil and Watermark:FindFirstChild("Main") ~= nil then
+                    if WatermarkShowNick and WatermarkShowTime and WatermarkShowFPS then
+                        Watermark.Main.Text.Text = "nanohub | " .. currentTime .. " | " .. Player.Name .. " | FPS :" .. fpsnew .. " | BUILD: ALPHA"
+                    elseif WatermarkShowTime and WatermarkShowFPS and not WatermarkShowNick then
+                        Watermark.Main.Text.Text = "nanohub | " .. currentTime .. " | FPS :" .. fpsnew .. " | BUILD: ALPHA"
+                    elseif WatermarkShowTime and WatermarkShowNick and not WatermarkShowFPS then 
+                        Watermark.Main.Text.Text = "nanohub | " .. currentTime .. " | " .. Player.Name .. " | BUILD: ALPHA"
+                    elseif WatermarkShowNick and WatermarkShowFPS and not WatermarkShowTime then
+                        Watermark.Main.Text.Text =  "nanohub |  " .. Player.Name .. " | BUILD: ALPHA"
+                    elseif WatermarkShowTime and not WatermarkShowFPS and not WatermarkShowNick then
+                        Watermark.Main.Text.Text = "nanohub | " .. currentTime .. " | BUILD: ALPHA"
+                    elseif WatermarkShowNick and not WatermarkShowTime and not WatermarkShowFPS then
+                        Watermark.Main.Text.Text = "nanohub | " .. Player.Name .. " | BUILD: ALPHA"
+                    elseif WatermarkShowFPS and not WatermarkShowTime and not WatermarkShowNick then
+                        Watermark.Main.Text.Text = "nanohub | FPS:" .. fpsnew .. "| BUILD: ALPHA"
+                    elseif not WatermarkShowTime and not WatermarkShowNick and not WatermarkShowFPS then
+                        Watermark.Main.Text.Text = "nanohub | BUILD: ALPHA"
+                    end
+                end
+            end
+        )
+    else
+        if game.CoreGui:FindFirstChild('Watermark') then
+            game.CoreGui.Watermark:Destroy()
+        end
+    end
+end)
+
+VisualsTabGrWatermark:CreateToggle('Show Time',function(val)
+    getgenv().watermark.ShowTime = val
+end)
+
+VisualsTabGrWatermark:CreateToggle('Show Nick',function(val)
+    getgenv().watermark.ShowNick = val
+end)
+
+VisualsTabGrWatermark:CreateToggle('Show FPS',function(val)
+    getgenv().watermark.ShowFPS = val
+end)
+
+VisualsTabGrViewmodel:CreateToggle('Viewmodel Enabled',function(val)
+    getgenv().viewmodel.Enabled = val
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Viewmodel X',-360,360,0,function(val)
+    getgenv().viewmodel.X = val
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Viewmodel Y',-360,360,0,function(val)
+    getgenv().viewmodel.Y = val
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Viewmodel Z',-360,360,0,function(val)
+    getgenv().viewmodel.Z = val
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Viewmodel Roll',-360,360,0,function(val)
+    getgenv().viewmodel.Roll = val
+end)
+
+VisualsTabGrViewmodel:CreateToggle('Change Color',function(val)
+    getgenv().viewmodel.ChangeColor = val
+end)
+
+VisualsTabGrViewmodel:CreateColorPicker('Arms Color',Color3.fromRGB(255,255,255),function(state)
+    getgenv().viewmodel.Arms.Color = state
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Arms Transparency',0,100,0,function(val)
+    getgenv().viewmodel.Arms.Transparency = val / 100
+end)
+
+VisualsTabGrViewmodel:CreateColorPicker('Weapons Color',Color3.fromRGB(255,0,0),function(state)
+    getgenv().viewmodel.Weapon.Color = state
+end)
+
+VisualsTabGrViewmodel:CreateSlider('Weapons Transparency',0,100,0,function(val)
+    getgenv().viewmodel.Weapon.Transparency = val / 100
+end)
+
+MovementTabGrYourself:CreateToggle(
+    "Bunny Hop",
+    function(val)
+        getgenv().yourself.Bhop.Enabled = val
+        if getgenv().yourself.Bhop.Enabled then
+            RunService:BindToRenderStep(
+                "Bunny_Hop",
+                23,
+                function()
+                    if isAlive(Player) then
+                        if UIS:IsKeyDown(Enum.KeyCode.Space) then
+                            Player.Character.Humanoid.Jump = true
+                            getgenv().yourself.Bhop.Hopping = true
+                        else
+                            getgenv().yourself.Bhop.Hopping = false
+                        end
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Bunny_Hop")
+        end
+    end
+)
+
+MovementTabGrYourself:CreateSlider(
+    "Bunny Hop Speed",
+    0,
+    200,
+    18,
+    function(val)
+        getgenv().yourself.Bhop.Speed = val
+    end
+)
+
+VisualsTabGrBullet:CreateToggle('Bullet Tracers',function(val)
+    getgenv().bullet.BulletTracers.Enabled = val
+end)
+
+VisualsTabGrBullet:CreateColorPicker('Bullet Tracers Color',Color3.fromRGB(0,0,255),function(state)
+    getgenv().bullet.BulletTracers.Color = state
+end)
+
+VisualsTabGrBullet:CreateToggle('Bullet Impacts',function(val)
+    getgenv().bullet.BulletImpacts.Enabled = val
+end)
+
+VisualsTabGrBullet:CreateColorPicker('Bullet Impacts Color',Color3.fromRGB(255,0,0),function(state)
+    getgenv().bullet.BulletImpacts.Color = state
+end)
+
+
+VisualsTabGrOthers:CreateToggle(
+    "Box Esp",
+    function(val)
+        getgenv().drawings.BoxEsp = val
+        if getgenv().drawings.BoxEsp then
+            RunService:BindToRenderStep("Box_Esp",764,
+                function()
+                    for i, v in pairs(game.Players:GetPlayers()) do
+                        if isAlive(v) and (getgenv().others.ShowTeam and v ~= Player or v.Team ~= Player.Team) then
+                            local Camera = workspace.CurrentCamera
+                            local HeadOff = Vector3.new(0, 0.5, 0)
+                            local LegOff = Vector3.new(0, 3, 0)
+                            local BoxOutline = nil
+                            if getgenv().drawings.Squares[v.Name] ~= nil then
+                                BoxOutline = getgenv().drawings.Squares[v.Name].BoxOutline
+                            else
+                                BoxOutline = Drawing.new("Square")
+                            end
+                            BoxOutline.Visible = false
+                            BoxOutline.Color = Color3.new(0, 0, 0)
+                            BoxOutline.Thickness = 3
+                            BoxOutline.Transparency = 1
+                            BoxOutline.Filled = false
+
+                            local Box = nil
+                            if getgenv().drawings.Squares[v.Name] ~= nil then
+                                Box = getgenv().drawings.Squares[v.Name].Box
+                            else
+                                Box = Drawing.new("Square")
+                            end
+                            Box.Visible = false
+                            Box.Color = Color3.new(1,1,1)
+                            Box.Thickness = 1
+                            Box.Transparency = 1
+                            Box.Filled = false
+
+                            getgenv().drawings.Squares[v.Name] = {
+                                Box = Box,
+                                BoxOutline = BoxOutline
+                            }
+
+                            local RootPart = v.Character.HumanoidRootPart
+                            local Head = v.Character.Head
+                            local RootPosition, onScreen = Camera:WorldToViewportPoint(RootPart.Position)
+                            local HeadPosition = Camera:WorldToViewportPoint(Head.Position + HeadOff)
+                            local LegPosition = Camera:WorldToViewportPoint(RootPart.Position - LegOff)
+
+                            if onScreen then
+                                BoxOutline.Visible = true
+                                BoxOutline.Size =
+                                    Vector2.new((1500 / RootPosition.Z) * 1.5, (HeadPosition.Y - LegPosition.Y))
+                                BoxOutline.Position =
+                                    Vector2.new(
+                                    RootPosition.X - BoxOutline.Size.X / 2,
+                                    RootPosition.Y - BoxOutline.Size.Y / 2
+                                )
+
+                                Box.Visible = true
+                                Box.Color = Color3.new(1,1,1)
+                                Box.Size = Vector2.new((1500 / RootPosition.Z) * 1.5, (HeadPosition.Y - LegPosition.Y))
+                                Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 2)
+                            else
+                                BoxOutline.Visible = false
+                                Box.Visible = false
+                            end
+                        elseif isAlive(v) == false and getgenv().drawings.Squares[v.Name] ~= nil then
+                            for o, k in pairs(getgenv().drawings.Squares[v.Name]) do
+                                k:Remove()
+                            end
+                            getgenv().drawings.Squares[v.Name] = nil
+                        end
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep('Box_Esp')
+            for _,v in pairs(getgenv().drawings.Squares) do
+                if v ~= nil then
+                    for _,k in pairs(v) do
+                        k:Remove()
+                    end
+                end
+            end
+            table.clear(getgenv().drawings.Squares)
+        end
+    end
+)
+
+VisualsTabGrOthers:CreateToggle('Chams',function(val)
+    getgenv().others.Chams.Enabled = val
+    if getgenv().others.Chams.Enabled then
+        RunService:BindToRenderStep('Chams_k',66676,function()
+            for i,v in pairs(game.Players:GetPlayers()) do
+                if v and (getgenv().others.ShowTeam and v ~= Player or v.Team ~= Player.Team) then
+                    if isAlive(v) then
+                        if getgenv().others.Chams.ThroughWalls then
+                            chams(v.Character,true)
+                        else
+                            chams(v.Character,false)
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        RunService:UnbindFromRenderStep('Chams_k')
+    end
+end)
+
+VisualsTabGrOthers:CreateToggle('Through Walls',function(val)
+    getgenv().others.Chams.ThroughWalls = val
+end)
+
+VisualsTabGrOthers:CreateColorPicker('Chams Color',Color3.fromRGB(200,0,255),function(state)
+    getgenv().others.Chams.Color = state
+end)
+
+VisualsTabGrOthers:CreateSlider('Chams Transparency',0,100,0,function(val)
+    getgenv().others.Chams.Transparency = val
+end)
+
+VisualsTabGrOthers:CreateToggle('Show Teammates',function(val)
+    getgenv().others.ShowTeam = val
+    for _,v in pairs(getgenv().drawings.Squares) do
+        if v ~= nil then
+            for _,k in pairs(v) do
+                k:Remove()
+            end
+        end
+    end
+    table.clear(getgenv().drawings.Squares)
+end)
+
+VisualsTabGrSelf:CreateToggle(
+    "Third Person",
+    function(val)
+        getgenv().yourself.ThirdPerson.Enabled = val
+        if getgenv().yourself.ThirdPerson.Enabled then
+            RunService:BindToRenderStep(
+                "Third_Person",
+                5,
+                function()
+                    if isAlive(Player) then
+                        if Player.CameraMinZoomDistance ~= getgenv().yourself.ThirdPerson.Distance then
+                            workspace.ThirdPerson.Value = true
+                            Player.CameraMinZoomDistance = getgenv().yourself.ThirdPerson.Distance
+                            Player.CameraMaxZoomDistance = getgenv().yourself.ThirdPerson.Distance
+                        end
+                    end
+                end
+            )
+        else
+            workspace.ThirdPerson.Value = false
+            Player.CameraMinZoomDistance = 0
+            Player.CameraMaxZoomDistance = 0
+            RunService:UnbindFromRenderStep("Third_Person")
+        end
+    end
+):CreateKeyBind("X")
+
+VisualsTabGrSelf:CreateToggle('Show Third Person To Others',function(val)
+    getgenv().yourself.ThirdPerson.ShowToOthers = val
+end)
+
+VisualsTabGrSelf:CreateSlider(
+    "Third Person Distance",
+    0,
+    30,
+    10,
+    function(val)
+        getgenv().yourself.ThirdPerson.Distance = val
+    end
+)
+
+VisualsTabGrSelf:CreateToggle('Self Chams',function(val)
+    getgenv().yourself.Chams.Enabled = val
+    while wait() do
+        if not getgenv().yourself.Chams.Enabled then break end
+        if isAlive(Player) then
+            for i,v in pairs(Player.Character:GetDescendants()) do
+                if v:IsA('BasePart') then
+                    v.Material = 'ForceField'
+                    if v.Parent:IsA('Accessory') then
+                        v.Parent:Destroy()
+                    end
+                    if v.Name == 'Head' then
+                        v.Transparency = 0
+                    elseif v.Name == 'FakeHead' then
+                        v.Transparency = 1
+                    end
+                    v.Color = getgenv().yourself.Chams.Color
+                end
+            end
+        end
+    end
+end)
+
+VisualsTabGrSelf:CreateColorPicker('Self Chams Color',Color3.fromRGB(255,0,255),function(val)
+    getgenv().yourself.Chams.Color = val
+end)
+
+RageGrYaw:CreateToggle(
+    "Yaw",
+    function(val)
+        getgenv().yaw.Enabled = val
+    end
+)
+
+MiscTabGrYourself:CreateToggle(
+    "Godmode non FE",
+    function(val)
+        getgenv().yourself.GodmodeNonFE = val
+        if getgenv().yourself.GodmodeNonFE then
+            RunService:BindToRenderStep(
+                "Godmode_GOD",
+                7,
+                function()
+                    if isAlive(Player) then
+                        game.ReplicatedStorage.Events.FallDamage:FireServer(0 / 0)
+                        Player.Character.Humanoid.Health = 100
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Godmode_GOD")
+        end
+    end
+)
+
+MiscTabGrYourself:CreateToggle(
+    "Godmode FE",
+    function(val)
+        getgenv().yourself.GodmodeFE = val
+        if getgenv().yourself.GodmodeFE then
+            RunService:BindToRenderStep(
+                "Godmode_FEGOD",
+                7,
+                function()
+                    if isAlive(Player) and not getgenv().godmode.UsedFE then
+                        Player.Character.Humanoid.Parent = nil
+                        Instance.new('Humanoid',Player.Character)
+                        getgenv().godmode.UsedFE = true
+                    elseif not isAlive(Player) then
+                        getgenv().godmode.UsedFE = false
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Godmode_FEGOD")
+        end
+    end
+)
+
+MiscTabGrYourself:CreateToggle(
+    "Inf Money",
+    function(val)
+        getgenv().yourself.InfMoney = val
+        if getgenv().yourself.InfMoney then
+            RunService:BindToRenderStep(
+                "Inf_Money",
+                132,
+                function()
+                    Player.Cash.Value = 16000
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Inf_Money")
+            Player.Cash.Value = 10000
+        end
+    end
+)
+
+RageGrYaw:CreateToggle(
+    "Headless",
+    function(val)
+        getgenv().yaw.Yaw.Headless = val
+        if getgenv().yaw.Yaw.Headless then
+            RunService:BindToRenderStep('Headless',3454353,function()
+                if isAlive(Player) then
+                    if getgenv().yaw.Yaw.Headless then
+                        if Player.Character:FindFirstChild("HeadHB") then
+                            Player.Character.HeadHB:Destroy()
+                        end
+                        if Player.Character:FindFirstChild("FakeHead") then
+                            Player.Character.FakeHead:Destroy()
+                        end
+                        if Player.Character:FindFirstChild("Head") then
+                            Player.Character.Head.Transparency = 1
+                        end
+                    end
+                end
+            end)
+        else
+            RunService:UnbindFromRenderStep('Headless')
+        end
+    end
+)
+
+RageGrYaw:CreateDropdown(
+    "Yaw mode",
+    {"Default", "Backward" , 'Left' , 'Right', "Spin"},
+    function(val)
+        getgenv().yaw.Yaw.Mode = tostring(val)
+        if getgenv().yaw.Enabled then
+            RunService:BindToRenderStep(
+                "Yaw_AntiAim",
+                11,
+                function()
+                    function RotatePlayer(pos)
+                        local Gyro = Instance.new("BodyGyro")
+                        Gyro.D = 0
+                        Gyro.Name = 'Yaw-Anti-Aim'
+                        Gyro.P = (getgenv().yaw.Yaw.Strenght * 100)
+                        Gyro.MaxTorque = Vector3.new(0, (getgenv().yaw.Yaw.Strenght * 100), 0)
+                        Gyro.Parent = Player.Character.UpperTorso
+                        Gyro.CFrame = CFrame.new(Gyro.Parent.Position, pos.Position)
+                        wait()
+                        Gyro:Destroy()
+                    end
+                    if isAlive(Player) then
+                        if table.find({"Backward", "Left", "Right"}, getgenv().yaw.Yaw.Mode) then
+                            Player.Character.Humanoid.AutoRotate = false
+                            local CurrentAngle =
+                                (getgenv().yaw.Yaw.Mode == "Backward" and CFrame.new(-4, 0, 0) or
+                                getgenv().yaw.Yaw.Mode == "Left" and CFrame.new(-180, 0, 0) or
+                                getgenv().yaw.Yaw.Mode == "Right" and CFrame.new(180, 0, 0))
+                            RotatePlayer(workspace.CurrentCamera.CFrame * CurrentAngle)
+                        elseif getgenv().yaw.Yaw.Mode == "Spin" then
+                            Player.Character.Humanoid.AutoRotate = false
+                            Player.Character.HumanoidRootPart.CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(getgenv().yaw.Yaw.Strenght), 0)
+                        elseif Player.Character.Humanoid.AutoRotate == false then
+                            Player.Character.Humanoid.AutoRotate = true
+                        end
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Yaw_AntiAim")
+            if isAlive(Player) then
+                Player.Character.Humanoid.AutoRotate = true
+                for i,v in pairs(Player.Character:GetDescendants()) do
+                    if v:IsA('BodyGyro') and v.Name == 'Yaw-Anti-Aim' then
+                        v:Destroy()
+                    end
+                end
+            end
+        end
+    end
+)
+
+getgenv().scriptLocals['Pitch'] = RageGrYaw:CreateDropdown(
+    "Pitch",
+    {"Default", "Up", "Down", "Boneless", "Random",'Custom'},
+    function(val)
+        getgenv().yaw.Pitch = tostring(val)
+    end
+)
+
+RageGrYaw:CreateSlider('Custom Normal Pitch Angle',-15,15,5,function(val)
+    getgenv().yaw.Custom = val
+end)
+
+RageGrYaw:CreateSlider(
+    "Yaw Strenght",
+    0,
+    500,
+    100,
+    function(val)
+        getgenv().yaw.Yaw.Strenght = val
+    end
+)
+
+
+RageGrYaw:CreateToggle('Break Spectate',function(val)
+    getgenv().yaw.BreakCameraSpectate.Enabled = val
+end)
+
+RageGrYaw:CreateSlider('Min',0,30,1,function(val)
+    getgenv().yaw.BreakCameraSpectate.Min = val
+end)
+
+RageGrYaw:CreateSlider('Max',0,30,5,function(val)
+    getgenv().yaw.BreakCameraSpectate.Max = val
+end)
+
+RageTabGrRagebot:CreateToggle(
+    "Ragebot",
+    function(Value)
+        getgenv().ragebot.Enabled = Value
+    end
+)
+
+RageTabGrRagebot:CreateDropdown('Hitbox',{'Head','Chest','Arms','Legs'},function(val)
+    getgenv().ragebot.Hitbox = val
+end)
+
+RageTabGrRagebot:CreateToggle('Teamcheck',function(val)
+    getgenv().ragebot.Teamcheck = val
+end)
+
+RageTabGrRagebot:CreateToggle(
+    "Silent",
+    function(val)
+        getgenv().ragebot.Silent.Enabled = val
+        if getgenv().ragebot.Silent.Enabled then
+            RunService:BindToRenderStep(
+                "Silent_Ragebot",
+                3,
+                function()
+                    if isAlive(Player) then
+                        local target,fov = GetSilentTarget()
+                        if target ~= nil then
+                            local hitbox = Hitboxes[getgenv().ragebot.Hitbox]
+                            if hitbox ~= nil then
+                                for _, v in pairs(target.Character:GetChildren()) do
+                                    if getgenv().ragebot.Silent.Target == nil then
+                                        if table.find(hitbox, v.Name) then
+                                            getgenv().ragebot.Silent.Target = v 
+                                            getgenv().ragebot.Silent.Mouse.FOV = fov
+                                            if not Client.DISABLED then
+                                                --[[game.ReplicatedStorage.Events.HitPart:FireServer(unpack({
+                                                    [1] = getgenv().ragebot.Silent.Target,
+                                                    [2] = getgenv().ragebot.Silent.Target.Position,
+                                                    [3] = Client.gun.Name,
+                                                    [4] = math.rad(1),
+                                                    [5] = Player.Character.Gun,
+                                                    [8] = DamageBoost,
+                                                    [9] = false,
+                                                    [10] = (
+                                                        getgenv().ragebot.AlwaysWallbang and true or
+                                                        not getgenv().ragebot.AlwaysWallbang and false
+                                                    ),
+                                                    [11] = Vector3.new(),
+                                                    [12] = math.rad(1),
+                                                    [13] = Vector3.new()
+                                                }))]]
+                                                --Client.firebullet()
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        --getgenv().ragebot.Silent.Target = target.Character.Head
+                        end
+                    end
+                end
+            )
+        else
+            RunService:UnbindFromRenderStep("Silent_Ragebot")
+        end
+    end
+)
+
+RageTabGrRagebot:CreateSlider('Tap Times',1,20,1,function(val)
+    getgenv().ragebot.TapTimes = val
+end)
+
+RageTabGrRagebot:CreateToggle('Always Wallbang',function(val)
+    getgenv().ragebot.AlwaysWallbang = val
+    getgenv().ragebot.AWToggle = val
+    Player.Status.Kills.Changed:Connect(function(prop)
+        if prop == 'Value' then
+            if getgenv().ragebot.AlwaysWallbang then
+                getgenv().ragebot.AWToggle = false
+                wait()
+                getgenv().ragebot.AWToggle = true
+            end
+        end
+    end)
+end)
+
+----------------------------------------------------
+
+function CreateBulletTracer(pos)
+    local BulletTracers = Instance.new("Part")
+	BulletTracers.Anchored = true
+	BulletTracers.CanCollide = false
+	BulletTracers.Material = "ForceField"
+	BulletTracers.Color = getgenv().bullet.BulletTracers.Color
+	BulletTracers.Size = Vector3.new(0.2, 0.2, (Player.Character.Head.CFrame.p - pos).magnitude)
+	BulletTracers.CFrame = CFrame.new(Player.Character.Head.CFrame.p, pos) * CFrame.new(0, 0, -BulletTracers.Size.Z / 2)
+	BulletTracers.Name = "BulletTracers"
+	BulletTracers.Parent = workspace.CurrentCamera
+	wait(3)
+	BulletTracers:Destroy()
+end
+
+function CreateBulletImpact(pos)
+    local BulletImpacts = Instance.new("Part")
+	BulletImpacts.Anchored = true
+	BulletImpacts.CanCollide = false
+	BulletImpacts.Material = "ForceField"
+	BulletImpacts.Color = getgenv().bullet.BulletImpacts.Color
+	BulletImpacts.Size = Vector3.new(1,1,1)
+	BulletImpacts.Position = pos
+	BulletImpacts.Name = "BulletImpacts"
+	BulletImpacts.Parent = workspace.CurrentCamera
+	wait(3)
+	BulletImpacts:Destroy()
+end
+
+local mt = getrawmetatable(game)
+local OldIndex = mt.__index
+local OldNamecall = mt.__namecall
+local OldNewIndex = mt.__newindex
+setreadonly(mt, false)
+
+mt.__namecall =
+    newcclosure(
+    function(self, ...)
+        local args = {...}
+        local method = getnamecallmethod()
+        if not checkcaller() then
+            if method == "Kick" then
+                return wait(9e9)
+            elseif method == 'FindPartOnRayWithIgnoreList' and args[2][1] == workspace.Debris then
+                --[[if isAlive(Player) then
+                    if getgenv().ragebot.Enabled and getgenv().ragebot.Silent.Enabled and getgenv().ragebot.Silent.Target then
+                        args[1] = Ray.new(workspace.CurrentCamera.CFrame.p, (getgenv().ragebot.Silent.Target.Position - workspace.CurrentCamera.CFrame.p).unit * (Client.gun.Range.Value * 0.1))
+                    end
+                end]]
+            elseif method == 'SetPrimaryPartCFrame' and tostring(self) == 'Arms' then
+                if getgenv().viewmodel.Enabled then
+                    args[1] = args[1] * CFrame.new(Vector3.new(math.rad(getgenv().viewmodel.X-180),math.rad(getgenv().viewmodel.Y-180),math.rad(getgenv().viewmodel.Z-180))) * CFrame.Angles(0, 0, math.rad(getgenv().viewmodel.Roll-180))
+                end
+            elseif method == "InvokeServer" then
+                if tostring(self) == "Hugh" then
+                    return wait(9e9)
+                elseif tostring(self) == "Moolah" then
+                    return wait(9e9)
+                end
+            elseif method == "FireServer" then
+                if tostring(self) == "ControlTurn" and getgenv().yaw.Enabled then
+                    local CurrentAngle = (
+                        getgenv().yaw.Pitch == "Up" and 1 or getgenv().yaw.Pitch == "Down" and -1 or
+                        getgenv().yaw.Pitch == "Boneless" and -5 or
+                        getgenv().yaw.Pitch == "Random" and math.random(-5, 5) or
+                        getgenv().yaw.Pitch == 'Custom' and getgenv().yaw.Custom
+                    )
+                    if CurrentAngle then
+                        args[1] = CurrentAngle
+                    end
+                elseif tostring(self) == 'ReplicateCamera' then
+                    if getgenv().yourself.ThirdPerson.ShowToOthers then
+                        args[1] = workspace.CurrentCamera.CFrame * CFrame.new(0, 0, -getgenv().yourself.ThirdPerson.Distance)
+                    end
+                    if getgenv().yaw.BreakCameraSpectate.Enabled then
+                        args[1] = workspace.CurrentCamera.CFrame * CFrame.new(0, 0, -math.random(getgenv().yaw.BreakCameraSpectate.Min,getgenv().yaw.BreakCameraSpectate.Max))
+                    end
+                elseif tostring(self) == "HitPart" then
+                    local Bullets = (
+                        getgenv().bullet.BulletTracers.Enabled and CreateBulletTracer or
+                        getgenv().bullet.BulletImpacts.Enabled and CreateBulletImpact
+                    )
+                    if getgenv().ragebot.Enabled and getgenv().ragebot.Silent.Enabled and getgenv().ragebot.Silent.Target ~= nil then
+                        args[1] = getgenv().ragebot.Silent.Target
+                        args[2] = getgenv().ragebot.Silent.Target.Position
+                        spawn(function()
+                            for i = 1,getgenv().ragebot.TapTimes do
+                                self.FireServer(self, unpack(args))
+                            end
+                        end)
+                    end
+
+                    if getgenv().aimbot.Enabled and getgenv().aimbot.Silent.Enabled and getgenv().aimbot.Target ~= nil then
+                        args[1] = getgenv().aimbot.Target
+                        args[2] = args[1].Position
+                        spawn(function()
+                            return self.FireServer(self,unpack(args))
+                        end)
+                    end
+
+                    if getgenv().bullet.BulletTracers.Enabled then
+                        spawn(function() CreateBulletTracer(args[2]) end)
+                    end
+                    if getgenv().bullet.BulletImpacts.Enabled then
+                        spawn(function() CreateBulletImpact(args[2]) end)
+                    end
+
+                    if getgenv().ragebot.AlwaysWallbang then
+                        args[10] = true
+                    end
+                elseif tostring(self) == 'FallDamage' then
+                    if getgenv().bypasses.FallBypass then
+                        return
+                    end
+                elseif tostring(self) == 'BURNME' then
+                    if getgenv().bypasses.FireBypass then
+                        return
+                    end
+                end
+            end
+        end
+        return OldNamecall(self, unpack(args))
+    end
+)
+
+OldClientNewIndex =
+    hookfunc(
+    MetaClient.__newindex,
+    newcclosure(
+        function(self, idx, val)
+            if not checkcaller() then
+                if tostring(self) == "Humanoid" and idx == "WalkSpeed" then
+                    if getgenv().yourself.Bhop.Enabled and getgenv().yourself.Bhop.Hopping then
+                        val = getgenv().yourself.Bhop.Speed * (1.25 + (math.floor(math.random())))
+                    end
+                end
+            end
+
+            return OldClientNewIndex(self, idx, val)
+        end
+    )
+)
+
+workspace.CurrentCamera.ChildAdded:Connect(
+    function(ViewmodelFolder)
+        spawn(
+            function()
+                if ViewmodelFolder.Name == "Arms" and getgenv().viewmodel.ChangeColor then
+                    for i, v in pairs(ViewmodelFolder:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Left Arm") and v:FindFirstChild("Right Arm") then
+                            -- Arms Pointer
+                            local RightArm = v["Right Arm"]
+                            local LeftArm = v["Left Arm"]
+                            -- Gloves Pointer
+                            local RightGlove = RightArm:FindFirstChild("Glove") or RightArm:FindFirstChild("RGlove")
+                            local LeftGlove = LeftArm:FindFirstChild("Glove") or LeftArm:FindFirstChild("LGlove")
+                            -- Sleeves Pointer
+                            local RightSleeve = RightArm:FindFirstChild("Sleeve") or nil
+                            local LeftSleeve = LeftArm:FindFirstChild("Sleeve") or nil
+
+                            RightArm.Transparency = getgenv().viewmodel.Arms.Transparency
+                            RightArm.Reflectance = 0
+                            RightArm.Mesh.TextureId = ""
+                            RightArm.Color = getgenv().viewmodel.Arms.Color
+                            RightArm.Material = Enum.Material.ForceField
+
+                            LeftArm.Transparency = getgenv().viewmodel.Arms.Transparency
+                            LeftArm.Reflectance = 0
+                            LeftArm.Mesh.TextureId = ""
+                            LeftArm.Color = getgenv().viewmodel.Arms.Color
+                            LeftArm.Material = Enum.Material.ForceField
+
+                            RightGlove.Transparency = getgenv().viewmodel.Arms.Transparency
+                            RightGlove.Reflectance = 0
+                            RightGlove.Mesh.TextureId = ""
+                            RightGlove.Color = getgenv().viewmodel.Arms.Color
+                            RightGlove.Material = Enum.Material.ForceField
+
+                            LeftGlove.Transparency = getgenv().viewmodel.Arms.Transparency
+                            LeftGlove.Reflectance = 0
+                            LeftGlove.Mesh.TextureId = ""
+                            LeftGlove.Color = getgenv().viewmodel.Arms.Color
+                            LeftGlove.Material = Enum.Material.ForceField
+
+                            if RightSleeve and LeftSleeve then
+                                RightSleeve.Transparency = getgenv().viewmodel.Arms.Transparency
+                                RightSleeve.Reflectance = 0
+                                RightSleeve.Mesh.TextureId = ""
+                                RightSleeve.Color = getgenv().viewmodel.Arms.Color
+                                RightSleeve.Material = Enum.Material.ForceField
+
+                                LeftSleeve.Transparency = getgenv().viewmodel.Arms.Transparency
+                                LeftSleeve.Reflectance = 0
+                                LeftSleeve.Mesh.TextureId = ""
+                                LeftSleeve.Color = getgenv().viewmodel.Arms.Color
+                                LeftSleeve.Material = Enum.Material.ForceField
+                            end
+                        end
+                        if
+                            v:IsA("BasePart") and v.Name ~= ("Right Arm" or "Left Arm" or "Flash") and
+                                v.Transparency ~= 1
+                         then -- Weapons Pointer
+                            local Weapons = v
+
+                            if Weapons:IsA("MeshPart") then
+                                Weapons.TextureID = ""
+                            end
+                            if Weapons:FindFirstChildOfClass("SpecialMesh") then
+                                Weapons:FindFirstChildOfClass("SpecialMesh").TextureId = ""
+                            end
+
+                            Weapons.Transparency = getgenv().viewmodel.Weapon.Transparency
+                            Weapons.Reflectance = 0
+                            Weapons.Color = getgenv().viewmodel.Weapon.Color
+                            Weapons.Material = Enum.Material.ForceField
+                        end
+                    end
+                end
+            end
+        )
+    end
+)
